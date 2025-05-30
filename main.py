@@ -169,7 +169,6 @@ class SQLEditor:
         self.table.bind("<Double-1>", self.edit_cell)
         self.main_pane.add(self.table_frame, width=800)
 
-        # Right: SQL Console
         self.right_frame = tk.Frame(self.main_pane)
         self.sql_entry = ScrolledText(self.right_frame, height=10, width=30, wrap=tk.WORD)
         self.sql_entry.pack(fill=tk.X)
@@ -459,12 +458,11 @@ class SQLEditor:
         self.cursor.execute(f"PRAGMA table_info({table_name})")
         columns = [info[1] for info in self.cursor.fetchall()]
 
-        id_col = columns[0]  # assume ID is first
+        id_col = columns[0]
         new_id = simpledialog.askinteger("Paste Row", f"Enter new {id_col} value:")
         if new_id is None:
             return
 
-        # shift IDs up
         self.cursor.execute(f"UPDATE {table_name} SET {id_col} = {id_col} + 1 WHERE {id_col} >= ? ORDER BY {id_col} DESC", (new_id,))
         self.conn.commit()
 
